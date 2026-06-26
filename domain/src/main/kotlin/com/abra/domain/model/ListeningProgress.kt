@@ -5,7 +5,7 @@ data class ListeningProgress(
     val segmentIndex: Int,
     val characterOffset: Int,
     val completed: Boolean,
-    val updatedAtEpochMillis: Long
+    val updatedAtEpochMillis: Long,
 ) {
     fun percent(totalSegments: Int): Float {
         if (totalSegments <= 0) return 0f
@@ -18,5 +18,5 @@ data class ListeningSegment(
     val ebookId: String,
     val index: Int,
     val pageNumber: Int,
-    val text: String
+    val text: String,
 )

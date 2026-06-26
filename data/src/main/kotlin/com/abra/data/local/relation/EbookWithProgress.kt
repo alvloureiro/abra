@@ -9,7 +9,7 @@ data class EbookWithProgress(
     @Embedded val ebook: EbookEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "ebook_id"
+        entityColumn = "ebook_id",
     )
-    val progress: ListeningProgressEntity?
+    val progress: ListeningProgressEntity?,
 )

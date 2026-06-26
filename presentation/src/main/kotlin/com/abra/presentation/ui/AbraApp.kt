@@ -32,29 +32,32 @@ fun AbraApp() {
                             selected = destination == item,
                             onClick = { destination = item },
                             label = { Text(item.label) },
-                            icon = { Text(item.iconLabel) }
+                            icon = { Text(item.iconLabel) },
                         )
                     }
                 }
-            }
+            },
         ) { innerPadding ->
             when (destination) {
-                MainDestination.Library -> LibraryRoute(
-                    modifier = Modifier.padding(innerPadding),
-                    onListen = { ebookId ->
-                        selectedEbookId = ebookId
-                        destination = MainDestination.Listen
-                    }
-                )
+                MainDestination.Library ->
+                    LibraryRoute(
+                        modifier = Modifier.padding(innerPadding),
+                        onListen = { ebookId ->
+                            selectedEbookId = ebookId
+                            destination = MainDestination.Listen
+                        },
+                    )
 
-                MainDestination.Listen -> ReaderRoute(
-                    ebookId = selectedEbookId,
-                    modifier = Modifier.padding(innerPadding)
-                )
+                MainDestination.Listen ->
+                    ReaderRoute(
+                        ebookId = selectedEbookId,
+                        modifier = Modifier.padding(innerPadding),
+                    )
 
-                MainDestination.Settings -> SettingsRoute(
-                    modifier = Modifier.padding(innerPadding)
-                )
+                MainDestination.Settings ->
+                    SettingsRoute(
+                        modifier = Modifier.padding(innerPadding),
+                    )
             }
         }
     }
@@ -62,9 +65,9 @@ fun AbraApp() {
 
 private enum class MainDestination(
     val label: String,
-    val iconLabel: String
+    val iconLabel: String,
 ) {
     Library("Library", "Books"),
     Listen("Listen", "Play"),
-    Settings("Settings", "Voice")
+    Settings("Settings", "Voice"),
 }

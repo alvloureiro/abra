@@ -10,60 +10,54 @@ import com.abra.domain.model.EbookMetadata
 import com.abra.domain.model.ListeningProgress
 import com.abra.domain.model.ListeningSegment
 
-fun EbookWithProgress.toDomain(): Ebook {
-    return ebook.toDomain(progress?.toDomain())
-}
+fun EbookWithProgress.toDomain(): Ebook = ebook.toDomain(progress?.toDomain())
 
-fun EbookEntity.toDomain(progress: ListeningProgress? = null): Ebook {
-    return Ebook(
+fun EbookEntity.toDomain(progress: ListeningProgress? = null): Ebook =
+    Ebook(
         id = id,
         sourceUri = sourceUri,
-        metadata = EbookMetadata(
-            title = title,
-            fileName = fileName,
-            pageCount = pageCount
-        ),
+        metadata =
+            EbookMetadata(
+                title = title,
+                fileName = fileName,
+                pageCount = pageCount,
+            ),
         importedAtEpochMillis = importedAtEpochMillis,
         extractionStatus = EbookExtractionStatus.valueOf(extractionStatus),
         extractionMessage = extractionMessage,
-        progress = progress
+        progress = progress,
     )
-}
 
-fun ListeningProgress.toEntity(): ListeningProgressEntity {
-    return ListeningProgressEntity(
+fun ListeningProgress.toEntity(): ListeningProgressEntity =
+    ListeningProgressEntity(
         ebookId = ebookId,
         segmentIndex = segmentIndex,
         characterOffset = characterOffset,
         completed = completed,
-        updatedAtEpochMillis = updatedAtEpochMillis
+        updatedAtEpochMillis = updatedAtEpochMillis,
     )
-}
 
-fun ListeningProgressEntity.toDomain(): ListeningProgress {
-    return ListeningProgress(
+fun ListeningProgressEntity.toDomain(): ListeningProgress =
+    ListeningProgress(
         ebookId = ebookId,
         segmentIndex = segmentIndex,
         characterOffset = characterOffset,
         completed = completed,
-        updatedAtEpochMillis = updatedAtEpochMillis
+        updatedAtEpochMillis = updatedAtEpochMillis,
     )
-}
 
-fun ListeningSegment.toEntity(): ListeningSegmentEntity {
-    return ListeningSegmentEntity(
+fun ListeningSegment.toEntity(): ListeningSegmentEntity =
+    ListeningSegmentEntity(
         ebookId = ebookId,
         segmentIndex = index,
         pageNumber = pageNumber,
-        text = text
+        text = text,
     )
-}
 
-fun ListeningSegmentEntity.toDomain(): ListeningSegment {
-    return ListeningSegment(
+fun ListeningSegmentEntity.toDomain(): ListeningSegment =
+    ListeningSegment(
         ebookId = ebookId,
         index = segmentIndex,
         pageNumber = pageNumber,
-        text = text
+        text = text,
     )
-}

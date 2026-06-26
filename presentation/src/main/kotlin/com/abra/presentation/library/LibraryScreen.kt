@@ -37,21 +37,22 @@ import com.abra.domain.model.EbookExtractionStatus
 fun LibraryRoute(
     onListen: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: LibraryViewModel = viewModel()
+    viewModel: LibraryViewModel = viewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val importLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri ->
-            if (uri != null) viewModel.importPdf(uri.toString())
-        }
-    )
+    val importLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenDocument(),
+            onResult = { uri ->
+                if (uri != null) viewModel.importPdf(uri.toString())
+            },
+        )
 
     LibraryScreen(
         state = state,
         onImport = { importLauncher.launch(arrayOf("application/pdf")) },
         onListen = onListen,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -60,37 +61,39 @@ private fun LibraryScreen(
     state: LibraryUiState,
     onImport: () -> Unit,
     onListen: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column {
                 Text(
                     text = "Abra",
                     style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = "PDF audio ebooks",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Button(
                 onClick = onImport,
                 enabled = !state.isImporting,
-                modifier = Modifier.semantics {
-                    contentDescription = "Import PDF ebook"
-                }
+                modifier =
+                    Modifier.semantics {
+                        contentDescription = "Import PDF ebook"
+                    },
             ) {
                 Text(if (state.isImporting) "Importing" else "Add PDF")
             }
@@ -100,49 +103,49 @@ private fun LibraryScreen(
             Text(
                 text = message,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
 
         when {
             state.isLoading -> CircularProgressIndicator()
             state.ebooks.isEmpty() -> EmptyLibrary(onImport = onImport)
-            else -> LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(
-                    items = state.ebooks,
-                    key = { it.id }
-                ) { ebook ->
-                    EbookRow(
-                        ebook = ebook,
-                        onListen = { onListen(ebook.id) }
-                    )
+            else ->
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    items(
+                        items = state.ebooks,
+                        key = { it.id },
+                    ) { ebook ->
+                        EbookRow(
+                            ebook = ebook,
+                            onListen = { onListen(ebook.id) },
+                        )
+                    }
                 }
-            }
         }
     }
 }
 
 @Composable
-private fun EmptyLibrary(
-    onImport: () -> Unit
-) {
+private fun EmptyLibrary(onImport: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             text = "No ebooks yet",
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             text = "Add a text-based PDF to start listening.",
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         OutlinedButton(onClick = onImport) {
             Text("Choose PDF")
@@ -153,43 +156,47 @@ private fun EmptyLibrary(
 @Composable
 private fun EbookRow(
     ebook: Ebook,
-    onListen: () -> Unit
+    onListen: () -> Unit,
 ) {
     Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Text(
                 text = ebook.metadata.title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = ebook.metadata.fileName,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
 
             Text(
                 text = ebook.statusLabel(),
                 style = MaterialTheme.typography.bodyMedium,
-                color = when (ebook.extractionStatus) {
-                    EbookExtractionStatus.READY -> MaterialTheme.colorScheme.primary
-                    EbookExtractionStatus.UNSUPPORTED,
-                    EbookExtractionStatus.FAILED -> MaterialTheme.colorScheme.error
-                    EbookExtractionStatus.PENDING -> MaterialTheme.colorScheme.onSurfaceVariant
-                }
+                color =
+                    when (ebook.extractionStatus) {
+                        EbookExtractionStatus.READY -> MaterialTheme.colorScheme.primary
+                        EbookExtractionStatus.UNSUPPORTED,
+                        EbookExtractionStatus.FAILED,
+                        -> MaterialTheme.colorScheme.error
+                        EbookExtractionStatus.PENDING -> MaterialTheme.colorScheme.onSurfaceVariant
+                    },
             )
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -197,9 +204,10 @@ private fun EbookRow(
             Button(
                 onClick = onListen,
                 enabled = ebook.extractionStatus == EbookExtractionStatus.READY,
-                modifier = Modifier.semantics {
-                    contentDescription = "Listen to ${ebook.metadata.title}"
-                }
+                modifier =
+                    Modifier.semantics {
+                        contentDescription = "Listen to ${ebook.metadata.title}"
+                    },
             ) {
                 Text("Listen")
             }
@@ -207,13 +215,18 @@ private fun EbookRow(
     }
 }
 
-private fun Ebook.statusLabel(): String {
-    return when (extractionStatus) {
+private fun Ebook.statusLabel(): String =
+    when (extractionStatus) {
         EbookExtractionStatus.PENDING -> "Extracting text"
-        EbookExtractionStatus.READY -> progress?.let {
-            if (it.completed) "Completed" else "Progress saved at segment ${it.segmentIndex + 1}"
-        } ?: "Ready to listen"
+        EbookExtractionStatus.READY ->
+            progress?.let { savedProgress ->
+                val segmentNumber = savedProgress.segmentIndex + 1
+                if (savedProgress.completed) {
+                    "Completed"
+                } else {
+                    "Progress saved at segment $segmentNumber"
+                }
+            } ?: "Ready to listen"
         EbookExtractionStatus.UNSUPPORTED -> extractionMessage ?: "Unsupported PDF"
         EbookExtractionStatus.FAILED -> extractionMessage ?: "Import failed"
     }
-}

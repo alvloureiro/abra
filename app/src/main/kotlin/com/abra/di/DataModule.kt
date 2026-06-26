@@ -35,14 +35,14 @@ object DataModule {
     @Provides
     @Singleton
     fun provideDatabase(
-        @ApplicationContext context: Context
-    ): AbraDatabase {
-        return Room.databaseBuilder(
-            context,
-            AbraDatabase::class.java,
-            "abra.db"
-        ).build()
-    }
+        @ApplicationContext context: Context,
+    ): AbraDatabase =
+        Room
+            .databaseBuilder(
+                context,
+                AbraDatabase::class.java,
+                "abra.db",
+            ).build()
 
     @Provides
     fun provideEbookDao(database: AbraDatabase): EbookDao = database.ebookDao()
@@ -58,17 +58,16 @@ object DataModule {
     @Provides
     @Singleton
     fun provideVoiceSettingsDataStore(
-        @ApplicationContext context: Context
-    ): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create {
+        @ApplicationContext context: Context,
+    ): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create {
             context.preferencesDataStoreFile("voice_settings")
         }
-    }
 
     @Provides
     @Singleton
     fun providePdfTextExtractor(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): PdfTextExtractor = PdfBoxPdfTextExtractor(context)
 
     @Provides
@@ -77,53 +76,48 @@ object DataModule {
         @ApplicationContext context: Context,
         ebookDao: EbookDao,
         listeningSegmentDao: ListeningSegmentDao,
-        pdfTextExtractor: PdfTextExtractor
-    ): EbookRepository {
-        return DefaultEbookRepository(
+        pdfTextExtractor: PdfTextExtractor,
+    ): EbookRepository =
+        DefaultEbookRepository(
             context = context,
             ebookDao = ebookDao,
             listeningSegmentDao = listeningSegmentDao,
-            pdfTextExtractor = pdfTextExtractor
+            pdfTextExtractor = pdfTextExtractor,
         )
-    }
 
     @Provides
     @Singleton
     fun provideEbookContentRepository(
         ebookDao: EbookDao,
         listeningSegmentDao: ListeningSegmentDao,
-        pdfTextExtractor: PdfTextExtractor
-    ): EbookContentRepository {
-        return DefaultEbookContentRepository(
+        pdfTextExtractor: PdfTextExtractor,
+    ): EbookContentRepository =
+        DefaultEbookContentRepository(
             ebookDao = ebookDao,
             listeningSegmentDao = listeningSegmentDao,
-            pdfTextExtractor = pdfTextExtractor
+            pdfTextExtractor = pdfTextExtractor,
         )
-    }
 
     @Provides
     @Singleton
     fun provideListeningProgressRepository(
-        listeningProgressDao: ListeningProgressDao
-    ): ListeningProgressRepository {
-        return DefaultListeningProgressRepository(listeningProgressDao)
-    }
+        listeningProgressDao: ListeningProgressDao,
+    ): ListeningProgressRepository = DefaultListeningProgressRepository(listeningProgressDao)
 
     @Provides
     @Singleton
     fun provideVoiceSettingsRepository(
         @ApplicationContext context: Context,
-        dataStore: DataStore<Preferences>
-    ): VoiceSettingsRepository {
-        return DataStoreVoiceSettingsRepository(
+        dataStore: DataStore<Preferences>,
+    ): VoiceSettingsRepository =
+        DataStoreVoiceSettingsRepository(
             context = context,
-            dataStore = dataStore
+            dataStore = dataStore,
         )
-    }
 
     @Provides
     @Singleton
     fun provideAudioPlaybackEngine(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): AudioPlaybackEngine = AndroidTextToSpeechPlaybackEngine(context)
 }

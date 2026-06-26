@@ -11,33 +11,33 @@ import com.abra.domain.model.VoiceOption
 import com.abra.domain.model.VoiceProfile
 import com.abra.domain.model.VoiceSettings
 import com.abra.domain.repository.VoiceSettingsRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.suspendCancellableCoroutine
 
 class DataStoreVoiceSettingsRepository(
     private val context: Context,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
 ) : VoiceSettingsRepository {
     private val initMutex = Mutex()
     private var textToSpeech: TextToSpeech? = null
 
-    override fun observeSettings(): Flow<VoiceSettings> {
-        return dataStore.data.map { preferences ->
+    override fun observeSettings(): Flow<VoiceSettings> =
+        dataStore.data.map { preferences ->
             VoiceSettings(
                 language = LanguageOption.fromTag(preferences[LANGUAGE_KEY]),
-                voiceProfile = preferences[VOICE_PROFILE_KEY]
-                    ?.let { runCatching { VoiceProfile.valueOf(it) }.getOrNull() }
-                    ?: VoiceProfile.SYSTEM,
-                voiceId = preferences[VOICE_ID_KEY]
+                voiceProfile =
+                    preferences[VOICE_PROFILE_KEY]
+                        ?.let { runCatching { VoiceProfile.valueOf(it) }.getOrNull() }
+                        ?: VoiceProfile.SYSTEM,
+                voiceId = preferences[VOICE_ID_KEY],
             )
         }
-    }
 
     override suspend fun updateLanguage(language: LanguageOption) {
         dataStore.edit { preferences ->
@@ -66,21 +66,21 @@ class DataStoreVoiceSettingsRepository(
     override suspend fun availableVoices(language: LanguageOption): List<VoiceOption> {
         val tts = ensureTextToSpeech()
         val locale = Locale.forLanguageTag(language.tag)
-        val voices = tts.voices.orEmpty()
-            .filter { voice ->
-                voice.locale.language == locale.language &&
-                    (locale.country.isBlank() || voice.locale.country == locale.country)
-            }
-            .map { voice ->
-                VoiceOption(
-                    id = voice.name,
-                    name = voice.name,
-                    language = language,
-                    profile = voice.name.inferProfile(),
-                    requiresNetwork = voice.isNetworkConnectionRequired
-                )
-            }
-            .sortedWith(compareBy<VoiceOption> { it.requiresNetwork }.thenBy { it.name })
+        val voices =
+            tts.voices
+                .orEmpty()
+                .filter { voice ->
+                    voice.locale.language == locale.language &&
+                        (locale.country.isBlank() || voice.locale.country == locale.country)
+                }.map { voice ->
+                    VoiceOption(
+                        id = voice.name,
+                        name = voice.name,
+                        language = language,
+                        profile = voice.name.inferProfile(),
+                        requiresNetwork = voice.isNetworkConnectionRequired,
+                    )
+                }.sortedWith(compareBy<VoiceOption> { it.requiresNetwork }.thenBy { it.name })
 
         return voices.ifEmpty {
             listOf(
@@ -89,8 +89,8 @@ class DataStoreVoiceSettingsRepository(
                     name = "System default",
                     language = language,
                     profile = VoiceProfile.SYSTEM,
-                    requiresNetwork = false
-                )
+                    requiresNetwork = false,
+                ),
             )
         }
     }
@@ -102,22 +102,22 @@ class DataStoreVoiceSettingsRepository(
         }
     }
 
-    private suspend fun createTextToSpeech(): TextToSpeech {
-        return suspendCancellableCoroutine { continuation ->
+    private suspend fun createTextToSpeech(): TextToSpeech =
+        suspendCancellableCoroutine { continuation ->
             var engine: TextToSpeech? = null
-            engine = TextToSpeech(context.applicationContext) { status ->
-                val initializedEngine = engine
-                if (status == TextToSpeech.SUCCESS && initializedEngine != null) {
-                    continuation.resume(initializedEngine)
-                } else {
-                    continuation.resumeWithException(
-                        IllegalStateException("Android TextToSpeech is not available.")
-                    )
+            engine =
+                TextToSpeech(context.applicationContext) { status ->
+                    val initializedEngine = engine
+                    if (status == TextToSpeech.SUCCESS && initializedEngine != null) {
+                        continuation.resume(initializedEngine)
+                    } else {
+                        continuation.resumeWithException(
+                            IllegalStateException("Android TextToSpeech is not available."),
+                        )
+                    }
                 }
-            }
             continuation.invokeOnCancellation { engine?.shutdown() }
         }
-    }
 
     private fun String.inferProfile(): VoiceProfile {
         val normalized = lowercase(Locale.US)

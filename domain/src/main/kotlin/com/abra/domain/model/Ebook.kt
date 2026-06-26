@@ -7,18 +7,18 @@ data class Ebook(
     val importedAtEpochMillis: Long,
     val extractionStatus: EbookExtractionStatus,
     val extractionMessage: String? = null,
-    val progress: ListeningProgress? = null
+    val progress: ListeningProgress? = null,
 )
 
 data class EbookMetadata(
     val title: String,
     val fileName: String,
-    val pageCount: Int
+    val pageCount: Int,
 )
 
 enum class EbookExtractionStatus {
     PENDING,
     READY,
     UNSUPPORTED,
-    FAILED
+    FAILED,
 }

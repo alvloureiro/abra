@@ -12,5 +12,5 @@ data class ListeningProgressEntity(
     @ColumnInfo(name = "segment_index") val segmentIndex: Int,
     @ColumnInfo(name = "character_offset") val characterOffset: Int,
     val completed: Boolean,
-    @ColumnInfo(name = "updated_at_epoch_millis") val updatedAtEpochMillis: Long
+    @ColumnInfo(name = "updated_at_epoch_millis") val updatedAtEpochMillis: Long,
 )

@@ -13,13 +13,15 @@ import com.abra.data.local.entity.ListeningSegmentEntity
     entities = [
         EbookEntity::class,
         ListeningProgressEntity::class,
-        ListeningSegmentEntity::class
+        ListeningSegmentEntity::class,
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = true,
 )
 abstract class AbraDatabase : RoomDatabase() {
     abstract fun ebookDao(): EbookDao
+
     abstract fun listeningProgressDao(): ListeningProgressDao
+
     abstract fun listeningSegmentDao(): ListeningSegmentDao
 }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 class DefaultEbookContentRepository(
     private val ebookDao: EbookDao,
     private val listeningSegmentDao: ListeningSegmentDao,
-    private val pdfTextExtractor: PdfTextExtractor
+    private val pdfTextExtractor: PdfTextExtractor,
 ) : EbookContentRepository {
     override fun observeSegments(ebookId: String) =
         listeningSegmentDao.observeSegments(ebookId).map { segments ->
@@ -21,20 +21,21 @@ class DefaultEbookContentRepository(
         }
 
     override suspend fun refreshExtractedText(ebookId: String): PdfExtractionResult {
-        val ebook = ebookDao.getEbook(ebookId)
-            ?: return PdfExtractionResult.Failure("Ebook was not found.")
+        val ebook =
+            ebookDao.getEbook(ebookId)
+                ?: return PdfExtractionResult.Failure("Ebook was not found.")
 
         return when (val result = pdfTextExtractor.extract(ebookId, ebook.sourceUri)) {
             is PdfExtractionResult.Success -> {
                 listeningSegmentDao.replaceSegments(
                     ebookId = ebookId,
-                    segments = result.segments.map { it.toEntity() }
+                    segments = result.segments.map { it.toEntity() },
                 )
                 ebookDao.updateExtraction(
                     ebookId = ebookId,
                     status = EbookExtractionStatus.READY.name,
                     message = null,
-                    pageCount = result.pageCount
+                    pageCount = result.pageCount,
                 )
                 result
             }
@@ -44,7 +45,7 @@ class DefaultEbookContentRepository(
                     ebookId = ebookId,
                     status = EbookExtractionStatus.UNSUPPORTED.name,
                     message = result.reason,
-                    pageCount = result.pageCount
+                    pageCount = result.pageCount,
                 )
                 result
             }
@@ -54,7 +55,7 @@ class DefaultEbookContentRepository(
                     ebookId = ebookId,
                     status = EbookExtractionStatus.FAILED.name,
                     message = result.message,
-                    pageCount = ebook.pageCount
+                    pageCount = ebook.pageCount,
                 )
                 result
             }

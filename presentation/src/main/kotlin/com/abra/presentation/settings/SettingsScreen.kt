@@ -30,7 +30,7 @@ import com.abra.domain.model.VoiceProfile
 @Composable
 fun SettingsRoute(
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = viewModel()
+    viewModel: SettingsViewModel = viewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     SettingsScreen(
@@ -38,7 +38,7 @@ fun SettingsRoute(
         onLanguageSelected = viewModel::selectLanguage,
         onVoiceProfileSelected = viewModel::selectVoiceProfile,
         onVoiceSelected = viewModel::selectVoice,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -48,18 +48,19 @@ private fun SettingsScreen(
     onLanguageSelected: (LanguageOption) -> Unit,
     onVoiceProfileSelected: (VoiceProfile) -> Unit,
     onVoiceSelected: (String?) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         Text(
             text = "Voice Settings",
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
 
         SettingsSection(title = "Language") {
@@ -68,7 +69,7 @@ private fun SettingsScreen(
                     FilterChip(
                         selected = state.settings.language == language,
                         onClick = { onLanguageSelected(language) },
-                        label = { Text(language.displayName) }
+                        label = { Text(language.displayName) },
                     )
                 }
             }
@@ -80,7 +81,7 @@ private fun SettingsScreen(
                     FilterChip(
                         selected = state.settings.voiceProfile == profile,
                         onClick = { onVoiceProfileSelected(profile) },
-                        label = { Text(profile.displayName) }
+                        label = { Text(profile.displayName) },
                     )
                 }
             }
@@ -89,15 +90,20 @@ private fun SettingsScreen(
         SettingsSection(title = "Available voices") {
             when {
                 state.isLoadingVoices -> CircularProgressIndicator()
-                state.errorMessage != null -> Text(
-                    text = state.errorMessage,
-                    color = MaterialTheme.colorScheme.error
-                )
-                else -> VoiceList(
-                    voices = state.availableVoices.filterForProfile(state.settings.voiceProfile),
-                    selectedVoiceId = state.settings.voiceId,
-                    onVoiceSelected = onVoiceSelected
-                )
+                state.errorMessage != null ->
+                    Text(
+                        text = state.errorMessage,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                else ->
+                    VoiceList(
+                        voices =
+                            state.availableVoices.filterForProfile(
+                                state.settings.voiceProfile,
+                            ),
+                        selectedVoiceId = state.settings.voiceId,
+                        onVoiceSelected = onVoiceSelected,
+                    )
             }
         }
     }
@@ -106,25 +112,23 @@ private fun SettingsScreen(
 @Composable
 private fun SettingsSection(
     title: String,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
         )
         content()
     }
 }
 
 @Composable
-private fun HorizontalOptions(
-    content: @Composable () -> Unit
-) {
+private fun HorizontalOptions(content: @Composable () -> Unit) {
     Row(
         modifier = Modifier.horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         content()
     }
@@ -134,33 +138,37 @@ private fun HorizontalOptions(
 private fun VoiceList(
     voices: List<VoiceOption>,
     selectedVoiceId: String?,
-    onVoiceSelected: (String?) -> Unit
+    onVoiceSelected: (String?) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         items(
             items = voices,
-            key = { it.id }
+            key = { it.id },
         ) { voice ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 RadioButton(
-                    selected = selectedVoiceId == voice.id || (selectedVoiceId == null && voice.id == "system"),
+                    selected =
+                        selectedVoiceId == voice.id ||
+                            (selectedVoiceId == null && voice.id == "system"),
                     onClick = {
                         onVoiceSelected(if (voice.id == "system") null else voice.id)
-                    }
+                    },
                 )
                 Column {
+                    val connectionLabel = if (voice.requiresNetwork) "Network" else "Local/system"
+
                     Text(voice.name)
                     Text(
-                        text = "${voice.profile.displayName} - ${if (voice.requiresNetwork) "Network" else "Local/system"}",
+                        text = "${voice.profile.displayName} - $connectionLabel",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

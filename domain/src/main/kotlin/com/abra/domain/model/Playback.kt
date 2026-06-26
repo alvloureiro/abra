@@ -4,7 +4,7 @@ data class PlaybackRequest(
     val ebookId: String,
     val segments: List<ListeningSegment>,
     val startSegmentIndex: Int,
-    val settings: VoiceSettings
+    val settings: VoiceSettings,
 )
 
 data class AudioPlaybackState(
@@ -12,7 +12,7 @@ data class AudioPlaybackState(
     val status: PlaybackStatus = PlaybackStatus.IDLE,
     val segmentIndex: Int = 0,
     val totalSegments: Int = 0,
-    val message: String? = null
+    val message: String? = null,
 ) {
     val isActive: Boolean
         get() = status == PlaybackStatus.PLAYING || status == PlaybackStatus.PAUSED
@@ -25,5 +25,5 @@ enum class PlaybackStatus {
     PAUSED,
     STOPPED,
     COMPLETED,
-    ERROR
+    ERROR,
 }

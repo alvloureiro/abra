@@ -8,8 +8,12 @@ interface AudioPlaybackEngine {
     val playbackState: StateFlow<AudioPlaybackState>
 
     suspend fun play(request: PlaybackRequest)
+
     fun pause()
+
     fun resume()
+
     fun stop()
+
     fun skipTo(segmentIndex: Int)
 }

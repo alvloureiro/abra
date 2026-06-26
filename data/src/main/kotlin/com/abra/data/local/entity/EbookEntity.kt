@@ -13,5 +13,5 @@ data class EbookEntity(
     @ColumnInfo(name = "page_count") val pageCount: Int,
     @ColumnInfo(name = "imported_at_epoch_millis") val importedAtEpochMillis: Long,
     @ColumnInfo(name = "extraction_status") val extractionStatus: String,
-    @ColumnInfo(name = "extraction_message") val extractionMessage: String?
+    @ColumnInfo(name = "extraction_message") val extractionMessage: String?,
 )

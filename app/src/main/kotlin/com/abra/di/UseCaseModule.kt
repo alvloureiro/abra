@@ -29,7 +29,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UseCaseModule {
+object EbookUseCaseModule {
     @Provides
     fun provideImportEbookUseCase(repository: EbookRepository) = ImportEbookUseCase(repository)
 
@@ -42,30 +42,29 @@ object UseCaseModule {
     @Provides
     fun provideGetEbookTextUseCase(repository: EbookContentRepository) =
         GetEbookTextUseCase(repository)
+}
 
+@Module
+@InstallIn(SingletonComponent::class)
+object PlaybackUseCaseModule {
     @Provides
     fun provideObservePlaybackStateUseCase(engine: AudioPlaybackEngine) =
         ObservePlaybackStateUseCase(engine)
 
     @Provides
-    fun provideStartListeningUseCase(engine: AudioPlaybackEngine) =
-        StartListeningUseCase(engine)
+    fun provideStartListeningUseCase(engine: AudioPlaybackEngine) = StartListeningUseCase(engine)
 
     @Provides
-    fun providePauseListeningUseCase(engine: AudioPlaybackEngine) =
-        PauseListeningUseCase(engine)
+    fun providePauseListeningUseCase(engine: AudioPlaybackEngine) = PauseListeningUseCase(engine)
 
     @Provides
-    fun provideResumeListeningUseCase(engine: AudioPlaybackEngine) =
-        ResumeListeningUseCase(engine)
+    fun provideResumeListeningUseCase(engine: AudioPlaybackEngine) = ResumeListeningUseCase(engine)
 
     @Provides
-    fun provideStopListeningUseCase(engine: AudioPlaybackEngine) =
-        StopListeningUseCase(engine)
+    fun provideStopListeningUseCase(engine: AudioPlaybackEngine) = StopListeningUseCase(engine)
 
     @Provides
-    fun provideSkipListeningUseCase(engine: AudioPlaybackEngine) =
-        SkipListeningUseCase(engine)
+    fun provideSkipListeningUseCase(engine: AudioPlaybackEngine) = SkipListeningUseCase(engine)
 
     @Provides
     fun provideObserveListeningProgressUseCase(repository: ListeningProgressRepository) =
@@ -74,7 +73,11 @@ object UseCaseModule {
     @Provides
     fun provideSaveListeningProgressUseCase(repository: ListeningProgressRepository) =
         SaveListeningProgressUseCase(repository)
+}
 
+@Module
+@InstallIn(SingletonComponent::class)
+object VoiceSettingsUseCaseModule {
     @Provides
     fun provideObserveVoiceSettingsUseCase(repository: VoiceSettingsRepository) =
         ObserveVoiceSettingsUseCase(repository)

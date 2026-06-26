@@ -9,11 +9,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DefaultListeningProgressRepository(
-    private val listeningProgressDao: ListeningProgressDao
+    private val listeningProgressDao: ListeningProgressDao,
 ) : ListeningProgressRepository {
-    override fun observeProgress(ebookId: String): Flow<ListeningProgress?> {
-        return listeningProgressDao.observeProgress(ebookId).map { it?.toDomain() }
-    }
+    override fun observeProgress(ebookId: String): Flow<ListeningProgress?> =
+        listeningProgressDao.observeProgress(ebookId).map { it?.toDomain() }
 
     override suspend fun saveProgress(progress: ListeningProgress) {
         listeningProgressDao.upsert(progress.toEntity())

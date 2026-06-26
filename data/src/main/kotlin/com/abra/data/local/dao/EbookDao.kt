@@ -36,12 +36,12 @@ interface EbookDao {
             extraction_message = :message,
             page_count = :pageCount
         WHERE id = :ebookId
-        """
+        """,
     )
     suspend fun updateExtraction(
         ebookId: String,
         status: String,
         message: String?,
-        pageCount: Int
+        pageCount: Int,
     )
 }

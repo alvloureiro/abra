@@ -13,7 +13,7 @@ data class ReaderUiState(
     val voiceSettings: VoiceSettings = VoiceSettings(),
     val playbackState: AudioPlaybackState = AudioPlaybackState(),
     val isLoading: Boolean = true,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 ) {
     val selectedEbookId: String?
         get() = ebook?.id

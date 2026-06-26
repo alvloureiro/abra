@@ -20,7 +20,10 @@ abstract class ListeningSegmentDao {
     abstract suspend fun insertAll(segments: List<ListeningSegmentEntity>)
 
     @Transaction
-    open suspend fun replaceSegments(ebookId: String, segments: List<ListeningSegmentEntity>) {
+    open suspend fun replaceSegments(
+        ebookId: String,
+        segments: List<ListeningSegmentEntity>,
+    ) {
         deleteForEbook(ebookId)
         insertAll(segments)
     }

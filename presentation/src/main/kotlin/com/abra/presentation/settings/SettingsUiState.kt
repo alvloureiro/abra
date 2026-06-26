@@ -7,5 +7,5 @@ data class SettingsUiState(
     val settings: VoiceSettings = VoiceSettings(),
     val availableVoices: List<VoiceOption> = emptyList(),
     val isLoadingVoices: Boolean = true,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )

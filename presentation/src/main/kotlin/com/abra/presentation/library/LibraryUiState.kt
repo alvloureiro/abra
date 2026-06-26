@@ -6,5 +6,5 @@ data class LibraryUiState(
     val ebooks: List<Ebook> = emptyList(),
     val isLoading: Boolean = true,
     val isImporting: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )

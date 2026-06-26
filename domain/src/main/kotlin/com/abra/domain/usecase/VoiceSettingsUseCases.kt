@@ -8,15 +8,13 @@ import com.abra.domain.repository.VoiceSettingsRepository
 import kotlinx.coroutines.flow.Flow
 
 class ObserveVoiceSettingsUseCase(
-    private val voiceSettingsRepository: VoiceSettingsRepository
+    private val voiceSettingsRepository: VoiceSettingsRepository,
 ) {
-    operator fun invoke(): Flow<VoiceSettings> {
-        return voiceSettingsRepository.observeSettings()
-    }
+    operator fun invoke(): Flow<VoiceSettings> = voiceSettingsRepository.observeSettings()
 }
 
 class UpdateVoiceLanguageUseCase(
-    private val voiceSettingsRepository: VoiceSettingsRepository
+    private val voiceSettingsRepository: VoiceSettingsRepository,
 ) {
     suspend operator fun invoke(language: LanguageOption) {
         voiceSettingsRepository.updateLanguage(language)
@@ -24,7 +22,7 @@ class UpdateVoiceLanguageUseCase(
 }
 
 class UpdateVoiceProfileUseCase(
-    private val voiceSettingsRepository: VoiceSettingsRepository
+    private val voiceSettingsRepository: VoiceSettingsRepository,
 ) {
     suspend operator fun invoke(profile: VoiceProfile) {
         voiceSettingsRepository.updateVoiceProfile(profile)
@@ -32,7 +30,7 @@ class UpdateVoiceProfileUseCase(
 }
 
 class UpdateVoiceIdUseCase(
-    private val voiceSettingsRepository: VoiceSettingsRepository
+    private val voiceSettingsRepository: VoiceSettingsRepository,
 ) {
     suspend operator fun invoke(voiceId: String?) {
         voiceSettingsRepository.updateVoiceId(voiceId)
@@ -40,9 +38,8 @@ class UpdateVoiceIdUseCase(
 }
 
 class GetAvailableVoicesUseCase(
-    private val voiceSettingsRepository: VoiceSettingsRepository
+    private val voiceSettingsRepository: VoiceSettingsRepository,
 ) {
-    suspend operator fun invoke(language: LanguageOption): List<VoiceOption> {
-        return voiceSettingsRepository.availableVoices(language)
-    }
+    suspend operator fun invoke(language: LanguageOption): List<VoiceOption> =
+        voiceSettingsRepository.availableVoices(language)
 }
