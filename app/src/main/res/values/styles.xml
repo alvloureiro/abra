@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.Abra" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">#FBFCF8</item>
+        <item name="android:navigationBarColor">#FBFCF8</item>
+        <item name="android:colorAccent">#0E5E5A</item>
+    </style>
+</resources>
