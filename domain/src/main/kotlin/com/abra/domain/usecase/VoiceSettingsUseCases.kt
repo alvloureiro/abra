@@ -4,6 +4,7 @@ import com.abra.domain.model.LanguageOption
 import com.abra.domain.model.VoiceOption
 import com.abra.domain.model.VoiceProfile
 import com.abra.domain.model.VoiceSettings
+import com.abra.domain.repository.VoiceCatalog
 import com.abra.domain.repository.VoiceSettingsRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -38,8 +39,8 @@ class UpdateVoiceIdUseCase(
 }
 
 class GetAvailableVoicesUseCase(
-    private val voiceSettingsRepository: VoiceSettingsRepository,
+    private val voiceCatalog: VoiceCatalog,
 ) {
     suspend operator fun invoke(language: LanguageOption): List<VoiceOption> =
-        voiceSettingsRepository.availableVoices(language)
+        voiceCatalog.availableVoices(language)
 }

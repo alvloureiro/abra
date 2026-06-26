@@ -4,6 +4,8 @@ import com.abra.domain.repository.AudioPlaybackEngine
 import com.abra.domain.repository.EbookContentRepository
 import com.abra.domain.repository.EbookRepository
 import com.abra.domain.repository.ListeningProgressRepository
+import com.abra.domain.repository.PdfTextExtractor
+import com.abra.domain.repository.VoiceCatalog
 import com.abra.domain.repository.VoiceSettingsRepository
 import com.abra.domain.usecase.GetAvailableVoicesUseCase
 import com.abra.domain.usecase.GetEbookTextUseCase
@@ -14,6 +16,11 @@ import com.abra.domain.usecase.ObserveListeningProgressUseCase
 import com.abra.domain.usecase.ObservePlaybackStateUseCase
 import com.abra.domain.usecase.ObserveVoiceSettingsUseCase
 import com.abra.domain.usecase.PauseListeningUseCase
+import com.abra.domain.usecase.PersistPlaybackProgressUseCase
+import com.abra.domain.usecase.ReaderPlaybackUseCases
+import com.abra.domain.usecase.ReaderProgressUseCases
+import com.abra.domain.usecase.ReaderQueryUseCases
+import com.abra.domain.usecase.RefreshEbookTextUseCase
 import com.abra.domain.usecase.ResumeListeningUseCase
 import com.abra.domain.usecase.SaveListeningProgressUseCase
 import com.abra.domain.usecase.SkipListeningUseCase
@@ -31,7 +38,15 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object EbookUseCaseModule {
     @Provides
-    fun provideImportEbookUseCase(repository: EbookRepository) = ImportEbookUseCase(repository)
+    fun provideImportEbookUseCase(
+        repository: EbookRepository,
+        pdfTextExtractor: PdfTextExtractor,
+        ebookContentRepository: EbookContentRepository,
+    ) = ImportEbookUseCase(repository, pdfTextExtractor, ebookContentRepository)
+
+    @Provides
+    fun provideRefreshEbookTextUseCase(ebookContentRepository: EbookContentRepository) =
+        RefreshEbookTextUseCase(ebookContentRepository)
 
     @Provides
     fun provideGetEbooksUseCase(repository: EbookRepository) = GetEbooksUseCase(repository)
@@ -73,6 +88,11 @@ object PlaybackUseCaseModule {
     @Provides
     fun provideSaveListeningProgressUseCase(repository: ListeningProgressRepository) =
         SaveListeningProgressUseCase(repository)
+
+    @Provides
+    fun providePersistPlaybackProgressUseCase(
+        saveListeningProgress: SaveListeningProgressUseCase,
+    ) = PersistPlaybackProgressUseCase(saveListeningProgress)
 }
 
 @Module
@@ -95,6 +115,40 @@ object VoiceSettingsUseCaseModule {
         UpdateVoiceIdUseCase(repository)
 
     @Provides
-    fun provideGetAvailableVoicesUseCase(repository: VoiceSettingsRepository) =
-        GetAvailableVoicesUseCase(repository)
+    fun provideGetAvailableVoicesUseCase(voiceCatalog: VoiceCatalog) =
+        GetAvailableVoicesUseCase(voiceCatalog)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ReaderUseCaseModule {
+    @Provides
+    fun provideReaderQueryUseCases(
+        getEbook: GetEbookUseCase,
+        getEbookText: GetEbookTextUseCase,
+        observeVoiceSettings: ObserveVoiceSettingsUseCase,
+    ) = ReaderQueryUseCases(getEbook, getEbookText, observeVoiceSettings)
+
+    @Provides
+    fun provideReaderPlaybackUseCases(
+        observePlaybackState: ObservePlaybackStateUseCase,
+        startListening: StartListeningUseCase,
+        pauseListening: PauseListeningUseCase,
+        resumeListening: ResumeListeningUseCase,
+        stopListening: StopListeningUseCase,
+        skipListening: SkipListeningUseCase,
+    ) = ReaderPlaybackUseCases(
+        observePlaybackState,
+        startListening,
+        pauseListening,
+        resumeListening,
+        stopListening,
+        skipListening,
+    )
+
+    @Provides
+    fun provideReaderProgressUseCases(
+        observeProgress: ObserveListeningProgressUseCase,
+        persistPlaybackProgress: PersistPlaybackProgressUseCase,
+    ) = ReaderProgressUseCases(observeProgress, persistPlaybackProgress)
 }

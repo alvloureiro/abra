@@ -8,5 +8,7 @@ interface EbookRepository {
 
     fun observeEbook(ebookId: String): Flow<Ebook?>
 
-    suspend fun importEbook(sourceUri: String): Ebook
+    suspend fun createPendingImport(sourceUri: String): Ebook
+
+    suspend fun requireEbook(ebookId: String): Ebook
 }

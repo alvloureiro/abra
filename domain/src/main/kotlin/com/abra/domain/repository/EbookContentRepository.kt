@@ -7,5 +7,11 @@ import kotlinx.coroutines.flow.Flow
 interface EbookContentRepository {
     fun observeSegments(ebookId: String): Flow<List<ListeningSegment>>
 
+    suspend fun applyExtractionResult(
+        ebookId: String,
+        result: PdfExtractionResult,
+        fallbackPageCount: Int = 0,
+    ): PdfExtractionResult
+
     suspend fun refreshExtractedText(ebookId: String): PdfExtractionResult
 }

@@ -11,16 +11,20 @@ import com.abra.data.local.dao.EbookDao
 import com.abra.data.local.dao.ListeningProgressDao
 import com.abra.data.local.dao.ListeningSegmentDao
 import com.abra.data.pdf.PdfBoxPdfTextExtractor
+import com.abra.data.repository.AndroidTtsVoiceCatalog
 import com.abra.data.repository.DataStoreVoiceSettingsRepository
 import com.abra.data.repository.DefaultEbookContentRepository
 import com.abra.data.repository.DefaultEbookRepository
 import com.abra.data.repository.DefaultListeningProgressRepository
+import com.abra.data.repository.EbookExtractionResultApplier
 import com.abra.data.tts.AndroidTextToSpeechPlaybackEngine
+import com.abra.data.tts.AndroidTtsEngineProvider
 import com.abra.domain.repository.AudioPlaybackEngine
 import com.abra.domain.repository.EbookContentRepository
 import com.abra.domain.repository.EbookRepository
 import com.abra.domain.repository.ListeningProgressRepository
 import com.abra.domain.repository.PdfTextExtractor
+import com.abra.domain.repository.VoiceCatalog
 import com.abra.domain.repository.VoiceSettingsRepository
 import dagger.Module
 import dagger.Provides
@@ -66,6 +70,23 @@ object DataModule {
 
     @Provides
     @Singleton
+    fun provideTtsEngineProvider(
+        @ApplicationContext context: Context,
+    ): AndroidTtsEngineProvider = AndroidTtsEngineProvider(context)
+
+    @Provides
+    @Singleton
+    fun provideEbookExtractionResultApplier(
+        ebookDao: EbookDao,
+        listeningSegmentDao: ListeningSegmentDao,
+    ): EbookExtractionResultApplier =
+        EbookExtractionResultApplier(
+            ebookDao = ebookDao,
+            listeningSegmentDao = listeningSegmentDao,
+        )
+
+    @Provides
+    @Singleton
     fun providePdfTextExtractor(
         @ApplicationContext context: Context,
     ): PdfTextExtractor = PdfBoxPdfTextExtractor(context)
@@ -75,15 +96,7 @@ object DataModule {
     fun provideEbookRepository(
         @ApplicationContext context: Context,
         ebookDao: EbookDao,
-        listeningSegmentDao: ListeningSegmentDao,
-        pdfTextExtractor: PdfTextExtractor,
-    ): EbookRepository =
-        DefaultEbookRepository(
-            context = context,
-            ebookDao = ebookDao,
-            listeningSegmentDao = listeningSegmentDao,
-            pdfTextExtractor = pdfTextExtractor,
-        )
+    ): EbookRepository = DefaultEbookRepository(context, ebookDao)
 
     @Provides
     @Singleton
@@ -91,11 +104,13 @@ object DataModule {
         ebookDao: EbookDao,
         listeningSegmentDao: ListeningSegmentDao,
         pdfTextExtractor: PdfTextExtractor,
+        extractionResultApplier: EbookExtractionResultApplier,
     ): EbookContentRepository =
         DefaultEbookContentRepository(
             ebookDao = ebookDao,
             listeningSegmentDao = listeningSegmentDao,
             pdfTextExtractor = pdfTextExtractor,
+            extractionResultApplier = extractionResultApplier,
         )
 
     @Provides
@@ -107,17 +122,17 @@ object DataModule {
     @Provides
     @Singleton
     fun provideVoiceSettingsRepository(
-        @ApplicationContext context: Context,
         dataStore: DataStore<Preferences>,
-    ): VoiceSettingsRepository =
-        DataStoreVoiceSettingsRepository(
-            context = context,
-            dataStore = dataStore,
-        )
+    ): VoiceSettingsRepository = DataStoreVoiceSettingsRepository(dataStore)
+
+    @Provides
+    @Singleton
+    fun provideVoiceCatalog(ttsEngineProvider: AndroidTtsEngineProvider): VoiceCatalog =
+        AndroidTtsVoiceCatalog(ttsEngineProvider)
 
     @Provides
     @Singleton
     fun provideAudioPlaybackEngine(
-        @ApplicationContext context: Context,
-    ): AudioPlaybackEngine = AndroidTextToSpeechPlaybackEngine(context)
+        ttsEngineProvider: AndroidTtsEngineProvider,
+    ): AudioPlaybackEngine = AndroidTextToSpeechPlaybackEngine(ttsEngineProvider)
 }

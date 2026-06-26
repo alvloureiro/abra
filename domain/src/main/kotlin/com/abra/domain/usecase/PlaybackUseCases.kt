@@ -84,6 +84,19 @@ class SaveListeningProgressUseCase(
     }
 }
 
+class PersistPlaybackProgressUseCase(
+    private val saveListeningProgress: SaveListeningProgressUseCase,
+) {
+    suspend operator fun invoke(playbackState: AudioPlaybackState) {
+        val progress =
+            playbackState.toProgress(System.currentTimeMillis())
+                ?: return
+        if (playbackState.status.shouldPersistProgress()) {
+            saveListeningProgress(progress)
+        }
+    }
+}
+
 fun AudioPlaybackState.toProgress(updatedAtEpochMillis: Long): ListeningProgress? {
     val activeEbookId = ebookId ?: return null
     if (status == PlaybackStatus.IDLE || status == PlaybackStatus.ERROR) return null
@@ -95,3 +108,9 @@ fun AudioPlaybackState.toProgress(updatedAtEpochMillis: Long): ListeningProgress
         updatedAtEpochMillis = updatedAtEpochMillis,
     )
 }
+
+fun PlaybackStatus.shouldPersistProgress(): Boolean =
+    this == PlaybackStatus.PLAYING ||
+        this == PlaybackStatus.PAUSED ||
+        this == PlaybackStatus.STOPPED ||
+        this == PlaybackStatus.COMPLETED

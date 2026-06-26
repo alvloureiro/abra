@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.room.runtime)
 
     ksp(libs.hilt.compiler)
+    ksp(libs.kotlin.metadata.jvm)
 
     debugImplementation(libs.compose.ui.tooling)
 

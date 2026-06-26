@@ -3,7 +3,9 @@ package com.abra.presentation.reader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abra.domain.model.PlaybackStatus
-import com.abra.domain.usecase.toProgress
+import com.abra.domain.usecase.ReaderPlaybackUseCases
+import com.abra.domain.usecase.ReaderProgressUseCases
+import com.abra.domain.usecase.ReaderQueryUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,18 +55,10 @@ class ReaderViewModel
                                 errorMessage = null,
                             )
                         }
-                    }.collect { state -> _uiState.value = state }
-            }
-
-            viewModelScope.launch {
-                playbackUseCases.observePlaybackState().collect { playbackState ->
-                    val progress =
-                        playbackState.toProgress(System.currentTimeMillis())
-                            ?: return@collect
-                    if (playbackState.status.shouldPersistProgress()) {
-                        progressUseCases.saveProgress(progress)
+                    }.collect { state ->
+                        _uiState.value = state
+                        progressUseCases.persistPlaybackProgress(state.playbackState)
                     }
-                }
             }
         }
 
@@ -138,10 +132,4 @@ class ReaderViewModel
             val savedProgressIndex = progress?.takeUnless { it.completed }?.segmentIndex
             return (activePlaybackIndex ?: savedProgressIndex ?: 0).coerceIn(0, segments.lastIndex)
         }
-
-        private fun PlaybackStatus.shouldPersistProgress(): Boolean =
-            this == PlaybackStatus.PLAYING ||
-                this == PlaybackStatus.PAUSED ||
-                this == PlaybackStatus.STOPPED ||
-                this == PlaybackStatus.COMPLETED
     }

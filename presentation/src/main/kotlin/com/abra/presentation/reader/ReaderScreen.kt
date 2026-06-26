@@ -22,15 +22,15 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abra.domain.model.PlaybackStatus
 
 @Composable
 fun ReaderRoute(
     ebookId: String?,
     modifier: Modifier = Modifier,
-    viewModel: ReaderViewModel = viewModel(),
+    viewModel: ReaderViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

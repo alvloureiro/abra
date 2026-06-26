@@ -1,6 +1,5 @@
 package com.abra.data.tts
 
-import android.content.Context
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -12,17 +11,14 @@ import com.abra.domain.model.VoiceSettings
 import com.abra.domain.repository.AudioPlaybackEngine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.Locale
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 class AndroidTextToSpeechPlaybackEngine(
-    private val context: Context,
+    private val ttsEngineProvider: AndroidTtsEngineProvider,
 ) : AudioPlaybackEngine {
-    private val initMutex = Mutex()
+    private val listenerMutex = Mutex()
     private var textToSpeech: TextToSpeech? = null
     private var currentSegments: List<ListeningSegment> = emptyList()
     private var currentSettings: VoiceSettings = VoiceSettings()
@@ -104,30 +100,13 @@ class AndroidTextToSpeechPlaybackEngine(
 
     private suspend fun ensureTextToSpeech(): TextToSpeech {
         textToSpeech?.let { return it }
-        return initMutex.withLock {
-            textToSpeech ?: createTextToSpeech().also { engine ->
+        return listenerMutex.withLock {
+            textToSpeech ?: ttsEngineProvider.getEngine().also { engine ->
                 textToSpeech = engine
                 engine.setOnUtteranceProgressListener(playbackListener)
             }
         }
     }
-
-    private suspend fun createTextToSpeech(): TextToSpeech =
-        suspendCancellableCoroutine { continuation ->
-            var engine: TextToSpeech? = null
-            engine =
-                TextToSpeech(context.applicationContext) { status ->
-                    val initializedEngine = engine
-                    if (status == TextToSpeech.SUCCESS && initializedEngine != null) {
-                        continuation.resume(initializedEngine)
-                    } else {
-                        continuation.resumeWithException(
-                            IllegalStateException("Android TextToSpeech is not available."),
-                        )
-                    }
-                }
-            continuation.invokeOnCancellation { engine?.shutdown() }
-        }
 
     private fun applySettings(
         tts: TextToSpeech,

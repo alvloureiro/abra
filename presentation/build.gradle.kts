@@ -51,10 +51,12 @@ dependencies {
     api(libs.compose.ui)
     api(libs.coroutines.core)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.compose)
 
     ksp(libs.hilt.compiler)
+    ksp(libs.kotlin.metadata.jvm)
 
     debugImplementation(libs.compose.ui.tooling)
 

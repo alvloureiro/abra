@@ -28,8 +28,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abra.domain.model.Ebook
 import com.abra.domain.model.EbookExtractionStatus
 
@@ -37,7 +37,7 @@ import com.abra.domain.model.EbookExtractionStatus
 fun LibraryRoute(
     onListen: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: LibraryViewModel = viewModel(),
+    viewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val importLauncher =

@@ -6,15 +6,11 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.core.net.toUri
 import com.abra.data.local.dao.EbookDao
-import com.abra.data.local.dao.ListeningSegmentDao
 import com.abra.data.local.entity.EbookEntity
 import com.abra.data.local.mapper.toDomain
-import com.abra.data.local.mapper.toEntity
 import com.abra.domain.model.Ebook
 import com.abra.domain.model.EbookExtractionStatus
-import com.abra.domain.model.PdfExtractionResult
 import com.abra.domain.repository.EbookRepository
-import com.abra.domain.repository.PdfTextExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,8 +20,6 @@ import java.util.UUID
 class DefaultEbookRepository(
     private val context: Context,
     private val ebookDao: EbookDao,
-    private val listeningSegmentDao: ListeningSegmentDao,
-    private val pdfTextExtractor: PdfTextExtractor,
 ) : EbookRepository {
     override fun observeLibrary(): Flow<List<Ebook>> =
         ebookDao.observeLibrary().map { ebooks ->
@@ -37,7 +31,7 @@ class DefaultEbookRepository(
             it?.toDomain()
         }
 
-    override suspend fun importEbook(sourceUri: String): Ebook =
+    override suspend fun createPendingImport(sourceUri: String): Ebook =
         withContext(Dispatchers.IO) {
             val ebookId = UUID.randomUUID().toString()
             val uri = sourceUri.toUri()
@@ -56,43 +50,12 @@ class DefaultEbookRepository(
                     extractionMessage = null,
                 )
             ebookDao.upsert(pendingEntity)
+            pendingEntity.toDomain()
+        }
 
-            when (val result = pdfTextExtractor.extract(ebookId, sourceUri)) {
-                is PdfExtractionResult.Success -> {
-                    listeningSegmentDao.replaceSegments(
-                        ebookId = ebookId,
-                        segments = result.segments.map { it.toEntity() },
-                    )
-                    ebookDao.updateExtraction(
-                        ebookId = ebookId,
-                        status = EbookExtractionStatus.READY.name,
-                        message = null,
-                        pageCount = result.pageCount,
-                    )
-                }
-
-                is PdfExtractionResult.Unsupported -> {
-                    ebookDao.updateExtraction(
-                        ebookId = ebookId,
-                        status = EbookExtractionStatus.UNSUPPORTED.name,
-                        message = result.reason,
-                        pageCount = result.pageCount,
-                    )
-                }
-
-                is PdfExtractionResult.Failure -> {
-                    ebookDao.updateExtraction(
-                        ebookId = ebookId,
-                        status = EbookExtractionStatus.FAILED.name,
-                        message = result.message,
-                        pageCount = 0,
-                    )
-                }
-            }
-
-            checkNotNull(ebookDao.getEbookWithProgress(ebookId)) {
-                "Imported ebook could not be reloaded."
-            }.toDomain()
+    override suspend fun requireEbook(ebookId: String): Ebook =
+        checkNotNull(ebookDao.getEbookWithProgress(ebookId)?.toDomain()) {
+            "Ebook $ebookId could not be loaded."
         }
 
     private fun persistReadPermission(uri: Uri) {
@@ -104,8 +67,8 @@ class DefaultEbookRepository(
         }
     }
 
-    private fun resolveDisplayName(uri: Uri): String? {
-        return context.contentResolver
+    private fun resolveDisplayName(uri: Uri): String? =
+        context.contentResolver
             .query(
                 uri,
                 arrayOf(OpenableColumns.DISPLAY_NAME),
@@ -117,5 +80,4 @@ class DefaultEbookRepository(
                 val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                 if (index < 0) null else cursor.getString(index)
             }
-    }
 }
