@@ -30,7 +30,7 @@ class PdfBoxPdfTextExtractor
                     PDDocument.load(stream).use { document ->
                         if (document.isEncrypted) {
                             return@withContext PdfExtractionResult.Unsupported(
-                                reason = "Encrypted PDFs are not supported in the MVP.",
+                                reason = "Encrypted PDFs are not supported.",
                                 pageCount = document.numberOfPages,
                             )
                         }
@@ -102,7 +102,6 @@ class PdfBoxPdfTextExtractor
     private companion object {
         const val MIN_SEGMENT_LENGTH = 12
         const val NO_SELECTABLE_TEXT_REASON =
-            "No selectable text was found. Scanned PDFs require OCR, " +
-                "which is out of scope for the MVP."
+            "No selectable text was found. Scanned PDFs require OCR, which is not supported."
     }
 }
