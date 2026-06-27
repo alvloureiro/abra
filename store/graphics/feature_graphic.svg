@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <rect width="1024" height="500" fill="#0E5E5A"/>
+  <rect x="80" y="100" width="200" height="280" rx="12" fill="#FFFFFF" opacity="0.95"/>
+  <rect x="110" y="140" width="140" height="12" rx="4" fill="#0E5E5A" opacity="0.3"/>
+  <rect x="110" y="165" width="140" height="8" rx="3" fill="#0E5E5A" opacity="0.2"/>
+  <rect x="110" y="182" width="120" height="8" rx="3" fill="#0E5E5A" opacity="0.2"/>
+  <rect x="110" y="199" width="130" height="8" rx="3" fill="#0E5E5A" opacity="0.2"/>
+  <circle cx="180" cy="330" r="28" fill="#0E5E5A" opacity="0.15"/>
+  <polygon points="175,318 175,342 195,330" fill="#0E5E5A"/>
+  <text x="320" y="220" font-family="sans-serif" font-size="72" font-weight="700" fill="#FFFFFF">Abra</text>
+  <text x="320" y="290" font-family="sans-serif" font-size="36" fill="#FFFFFF" opacity="0.85">Listen to your PDF ebooks</text>
+</svg>

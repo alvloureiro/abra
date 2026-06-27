@@ -1,0 +1,25 @@
+Abra turns your PDF ebooks into audio you can listen to anywhere — privately, on your device.
+
+Import PDFs from your phone or cloud storage, and Abra extracts the text and reads it aloud using your device's text-to-speech voices. Pick up where you left off with automatic progress tracking.
+
+<b>Private by design</b>
+• No account required
+• No ads or analytics
+• Your files stay on your device
+• No unnecessary permissions
+
+<b>Built for listening</b>
+• Import PDFs with the system file picker
+• Play, pause, and resume listening
+• Choose your preferred TTS voice and language
+• Mini player stays visible while you browse your library
+
+<b>Simple library</b>
+• See all imported ebooks in one place
+• Open any book and continue from your last position
+
+<b>Limitations</b>
+• Text-based PDFs only — scanned pages without selectable text are not supported
+• Encrypted PDFs are not supported
+
+Abra is open source. Questions and feedback welcome on GitHub.
