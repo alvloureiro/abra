@@ -6,10 +6,13 @@ import com.abra.domain.model.VoiceOption
 import com.abra.domain.model.VoiceProfile
 import com.abra.domain.repository.VoiceCatalog
 import java.util.Locale
+import javax.inject.Inject
 
-class AndroidTtsVoiceCatalog(
-    private val ttsEngineProvider: AndroidTtsEngineProvider,
-) : VoiceCatalog {
+class AndroidTtsVoiceCatalog
+    @Inject
+    constructor(
+        private val ttsEngineProvider: AndroidTtsEngineProvider,
+    ) : VoiceCatalog {
     override suspend fun availableVoices(language: LanguageOption): List<VoiceOption> {
         val tts = ttsEngineProvider.getEngine()
         val locale = Locale.forLanguageTag(language.tag)

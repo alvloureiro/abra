@@ -8,12 +8,16 @@ import com.abra.domain.repository.PdfTextExtractor
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class PdfBoxPdfTextExtractor(
-    private val context: Context,
-) : PdfTextExtractor {
+class PdfBoxPdfTextExtractor
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+    ) : PdfTextExtractor {
     override suspend fun extract(
         ebookId: String,
         sourceUri: String,
@@ -22,13 +26,7 @@ class PdfBoxPdfTextExtractor(
             runCatching {
                 PDFBoxResourceLoader.init(context.applicationContext)
                 val uri = sourceUri.toUri()
-                val inputStream =
-                    context.contentResolver.openInputStream(uri)
-                        ?: return@withContext PdfExtractionResult.Failure(
-                            "Unable to open PDF file.",
-                        )
-
-                inputStream.use { stream ->
+                context.contentResolver.openInputStream(uri)?.use { stream ->
                     PDDocument.load(stream).use { document ->
                         if (document.isEncrypted) {
                             return@withContext PdfExtractionResult.Unsupported(
@@ -50,7 +48,9 @@ class PdfBoxPdfTextExtractor(
                             )
                         }
                     }
-                }
+                } ?: return@withContext PdfExtractionResult.Failure(
+                    "Unable to open PDF file.",
+                )
             }.getOrElse { error ->
                 PdfExtractionResult.Failure(error.message ?: "PDF extraction failed.")
             }

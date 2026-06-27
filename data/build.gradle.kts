@@ -36,25 +36,33 @@ kotlin {
     }
 }
 
+hilt {
+    enableAggregatingTask = true
+}
+
 ksp {
     arg("room.incremental", "true")
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
-    implementation(project(":domain"))
+    api(project(":domain"))
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.coroutines.core)
-    implementation(libs.datastore.core)
-    implementation(libs.datastore.preferences.core)
+    api(libs.coroutines.core)
+    api(libs.datastore.core)
+    api(libs.datastore.preferences.core)
+    api(libs.hilt.android)
+    api(libs.javax.inject)
     implementation(libs.pdfbox.android) {
         exclude(group = "org.bouncycastle", module = "bcpkix-jdk15to18")
         exclude(group = "org.bouncycastle", module = "bcprov-jdk15to18")
         exclude(group = "org.bouncycastle", module = "bcutil-jdk15to18")
     }
-    implementation(libs.room.runtime)
+    api(libs.room.runtime)
 
+    ksp(libs.hilt.compiler)
+    ksp(libs.kotlin.metadata.jvm)
     ksp(libs.room.compiler)
 
     testImplementation(libs.coroutines.test)

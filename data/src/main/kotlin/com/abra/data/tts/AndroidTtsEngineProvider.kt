@@ -2,15 +2,21 @@ package com.abra.data.tts
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
-class AndroidTtsEngineProvider(
-    private val context: Context,
-) {
+@Singleton
+class AndroidTtsEngineProvider
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+    ) {
     private val initMutex = Mutex()
     private var textToSpeech: TextToSpeech? = null
 

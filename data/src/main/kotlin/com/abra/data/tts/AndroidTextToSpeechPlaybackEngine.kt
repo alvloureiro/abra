@@ -9,15 +9,20 @@ import com.abra.domain.model.PlaybackRequest
 import com.abra.domain.model.PlaybackStatus
 import com.abra.domain.model.VoiceSettings
 import com.abra.domain.repository.AudioPlaybackEngine
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.Locale
 
-class AndroidTextToSpeechPlaybackEngine(
-    private val ttsEngineProvider: AndroidTtsEngineProvider,
-) : AudioPlaybackEngine {
+@Singleton
+class AndroidTextToSpeechPlaybackEngine
+    @Inject
+    constructor(
+        private val ttsEngineProvider: AndroidTtsEngineProvider,
+    ) : AudioPlaybackEngine {
     private val listenerMutex = Mutex()
     private var textToSpeech: TextToSpeech? = null
     private var currentSegments: List<ListeningSegment> = emptyList()

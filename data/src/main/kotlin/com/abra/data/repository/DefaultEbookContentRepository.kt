@@ -6,14 +6,17 @@ import com.abra.data.local.mapper.toDomain
 import com.abra.domain.model.PdfExtractionResult
 import com.abra.domain.repository.EbookContentRepository
 import com.abra.domain.repository.PdfTextExtractor
+import javax.inject.Inject
 import kotlinx.coroutines.flow.map
 
-class DefaultEbookContentRepository(
-    private val ebookDao: EbookDao,
-    private val listeningSegmentDao: ListeningSegmentDao,
-    private val pdfTextExtractor: PdfTextExtractor,
-    private val extractionResultApplier: EbookExtractionResultApplier,
-) : EbookContentRepository {
+class DefaultEbookContentRepository
+    @Inject
+    constructor(
+        private val ebookDao: EbookDao,
+        private val listeningSegmentDao: ListeningSegmentDao,
+        private val pdfTextExtractor: PdfTextExtractor,
+        private val extractionResultApplier: EbookExtractionResultApplier,
+    ) : EbookContentRepository {
     override fun observeSegments(ebookId: String) =
         listeningSegmentDao.observeSegments(ebookId).map { segments ->
             segments.map { it.toDomain() }

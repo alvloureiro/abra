@@ -8,12 +8,15 @@ import com.abra.domain.model.LanguageOption
 import com.abra.domain.model.VoiceProfile
 import com.abra.domain.model.VoiceSettings
 import com.abra.domain.repository.VoiceSettingsRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class DataStoreVoiceSettingsRepository(
-    private val dataStore: DataStore<Preferences>,
-) : VoiceSettingsRepository {
+class DataStoreVoiceSettingsRepository
+    @Inject
+    constructor(
+        private val dataStore: DataStore<Preferences>,
+    ) : VoiceSettingsRepository {
     override fun observeSettings(): Flow<VoiceSettings> =
         dataStore.data.map { preferences ->
             VoiceSettings(

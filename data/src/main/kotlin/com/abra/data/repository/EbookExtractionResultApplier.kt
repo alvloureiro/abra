@@ -5,11 +5,14 @@ import com.abra.data.local.dao.ListeningSegmentDao
 import com.abra.data.local.mapper.toEntity
 import com.abra.domain.model.EbookExtractionStatus
 import com.abra.domain.model.PdfExtractionResult
+import javax.inject.Inject
 
-class EbookExtractionResultApplier(
-    private val ebookDao: EbookDao,
-    private val listeningSegmentDao: ListeningSegmentDao,
-) {
+class EbookExtractionResultApplier
+    @Inject
+    constructor(
+        private val ebookDao: EbookDao,
+        private val listeningSegmentDao: ListeningSegmentDao,
+    ) {
     suspend fun apply(
         ebookId: String,
         result: PdfExtractionResult,

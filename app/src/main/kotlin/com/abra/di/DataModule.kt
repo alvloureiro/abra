@@ -10,22 +10,6 @@ import com.abra.data.local.AbraDatabase
 import com.abra.data.local.dao.EbookDao
 import com.abra.data.local.dao.ListeningProgressDao
 import com.abra.data.local.dao.ListeningSegmentDao
-import com.abra.data.pdf.PdfBoxPdfTextExtractor
-import com.abra.data.repository.AndroidTtsVoiceCatalog
-import com.abra.data.repository.DataStoreVoiceSettingsRepository
-import com.abra.data.repository.DefaultEbookContentRepository
-import com.abra.data.repository.DefaultEbookRepository
-import com.abra.data.repository.DefaultListeningProgressRepository
-import com.abra.data.repository.EbookExtractionResultApplier
-import com.abra.data.tts.AndroidTextToSpeechPlaybackEngine
-import com.abra.data.tts.AndroidTtsEngineProvider
-import com.abra.domain.repository.AudioPlaybackEngine
-import com.abra.domain.repository.EbookContentRepository
-import com.abra.domain.repository.EbookRepository
-import com.abra.domain.repository.ListeningProgressRepository
-import com.abra.domain.repository.PdfTextExtractor
-import com.abra.domain.repository.VoiceCatalog
-import com.abra.domain.repository.VoiceSettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,72 +51,4 @@ object DataModule {
         PreferenceDataStoreFactory.create {
             context.preferencesDataStoreFile("voice_settings")
         }
-
-    @Provides
-    @Singleton
-    fun provideTtsEngineProvider(
-        @ApplicationContext context: Context,
-    ): AndroidTtsEngineProvider = AndroidTtsEngineProvider(context)
-
-    @Provides
-    @Singleton
-    fun provideEbookExtractionResultApplier(
-        ebookDao: EbookDao,
-        listeningSegmentDao: ListeningSegmentDao,
-    ): EbookExtractionResultApplier =
-        EbookExtractionResultApplier(
-            ebookDao = ebookDao,
-            listeningSegmentDao = listeningSegmentDao,
-        )
-
-    @Provides
-    @Singleton
-    fun providePdfTextExtractor(
-        @ApplicationContext context: Context,
-    ): PdfTextExtractor = PdfBoxPdfTextExtractor(context)
-
-    @Provides
-    @Singleton
-    fun provideEbookRepository(
-        @ApplicationContext context: Context,
-        ebookDao: EbookDao,
-    ): EbookRepository = DefaultEbookRepository(context, ebookDao)
-
-    @Provides
-    @Singleton
-    fun provideEbookContentRepository(
-        ebookDao: EbookDao,
-        listeningSegmentDao: ListeningSegmentDao,
-        pdfTextExtractor: PdfTextExtractor,
-        extractionResultApplier: EbookExtractionResultApplier,
-    ): EbookContentRepository =
-        DefaultEbookContentRepository(
-            ebookDao = ebookDao,
-            listeningSegmentDao = listeningSegmentDao,
-            pdfTextExtractor = pdfTextExtractor,
-            extractionResultApplier = extractionResultApplier,
-        )
-
-    @Provides
-    @Singleton
-    fun provideListeningProgressRepository(
-        listeningProgressDao: ListeningProgressDao,
-    ): ListeningProgressRepository = DefaultListeningProgressRepository(listeningProgressDao)
-
-    @Provides
-    @Singleton
-    fun provideVoiceSettingsRepository(
-        dataStore: DataStore<Preferences>,
-    ): VoiceSettingsRepository = DataStoreVoiceSettingsRepository(dataStore)
-
-    @Provides
-    @Singleton
-    fun provideVoiceCatalog(ttsEngineProvider: AndroidTtsEngineProvider): VoiceCatalog =
-        AndroidTtsVoiceCatalog(ttsEngineProvider)
-
-    @Provides
-    @Singleton
-    fun provideAudioPlaybackEngine(
-        ttsEngineProvider: AndroidTtsEngineProvider,
-    ): AudioPlaybackEngine = AndroidTextToSpeechPlaybackEngine(ttsEngineProvider)
 }

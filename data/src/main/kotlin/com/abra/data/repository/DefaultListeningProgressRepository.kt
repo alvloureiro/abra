@@ -5,12 +5,15 @@ import com.abra.data.local.mapper.toDomain
 import com.abra.data.local.mapper.toEntity
 import com.abra.domain.model.ListeningProgress
 import com.abra.domain.repository.ListeningProgressRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class DefaultListeningProgressRepository(
-    private val listeningProgressDao: ListeningProgressDao,
-) : ListeningProgressRepository {
+class DefaultListeningProgressRepository
+    @Inject
+    constructor(
+        private val listeningProgressDao: ListeningProgressDao,
+    ) : ListeningProgressRepository {
     override fun observeProgress(ebookId: String): Flow<ListeningProgress?> =
         listeningProgressDao.observeProgress(ebookId).map { it?.toDomain() }
 

@@ -11,16 +11,20 @@ import com.abra.data.local.mapper.toDomain
 import com.abra.domain.model.Ebook
 import com.abra.domain.model.EbookExtractionStatus
 import com.abra.domain.repository.EbookRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class DefaultEbookRepository(
-    private val context: Context,
-    private val ebookDao: EbookDao,
-) : EbookRepository {
+class DefaultEbookRepository
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+        private val ebookDao: EbookDao,
+    ) : EbookRepository {
     override fun observeLibrary(): Flow<List<Ebook>> =
         ebookDao.observeLibrary().map { ebooks ->
             ebooks.map { it.toDomain() }
@@ -67,17 +71,19 @@ class DefaultEbookRepository(
         }
     }
 
-    private fun resolveDisplayName(uri: Uri): String? =
-        context.contentResolver
-            .query(
+    private fun resolveDisplayName(uri: Uri): String? {
+        val cursor =
+            context.contentResolver.query(
                 uri,
                 arrayOf(OpenableColumns.DISPLAY_NAME),
                 null,
                 null,
                 null,
-            )?.use { cursor ->
-                if (!cursor.moveToFirst()) return@use null
-                val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (index < 0) null else cursor.getString(index)
-            }
+            ) ?: return null
+        return cursor.use {
+            if (!it.moveToFirst()) return@use null
+            val index = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (index < 0) null else it.getString(index)
+        }
+    }
 }
