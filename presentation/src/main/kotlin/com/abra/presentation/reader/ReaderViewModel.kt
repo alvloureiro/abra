@@ -63,8 +63,16 @@ class ReaderViewModel
         }
 
         fun openEbook(ebookId: String) {
+            val alreadyLoaded =
+                !shouldSetLoadingWhenOpeningEbook(
+                    currentSelectedEbookId = selectedEbookId.value,
+                    loadedEbookId = _uiState.value.ebook?.id,
+                    ebookId = ebookId,
+                )
             selectedEbookId.value = ebookId
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            if (!alreadyLoaded) {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            }
         }
 
         fun play() {

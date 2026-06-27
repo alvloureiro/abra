@@ -1,6 +1,7 @@
 package com.abra.presentation.reader
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -78,6 +79,7 @@ private fun ReaderScreen(
             ebookId = ebookId,
             state = state,
             actions = actions,
+            modifier = Modifier.weight(1f),
         )
     }
 }
@@ -87,14 +89,20 @@ private fun ReaderContent(
     ebookId: String?,
     state: ReaderUiState,
     actions: ReaderActions,
+    modifier: Modifier = Modifier,
 ) {
     if (ebookId == null) {
-        EmptyReader()
+        EmptyReader(modifier = modifier)
         return
     }
 
     if (state.isLoading) {
-        CircularProgressIndicator()
+        Box(
+            modifier = modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
         return
     }
 
@@ -103,29 +111,35 @@ private fun ReaderContent(
         Text(
             text = "Ebook was not found.",
             color = MaterialTheme.colorScheme.error,
+            modifier = modifier,
         )
         return
     }
 
-    ReaderSummary(
-        title = ebook.metadata.title,
-        segmentCount = state.segments.size,
-    )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+    ) {
+        ReaderSummary(
+            title = ebook.metadata.title,
+            segmentCount = state.segments.size,
+        )
 
-    ReaderProgress(state = state)
+        ReaderProgress(state = state)
 
-    state.errorMessage?.let { message ->
-        Text(
-            text = message,
-            color = MaterialTheme.colorScheme.error,
+        state.errorMessage?.let { message ->
+            Text(
+                text = message,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        PlaybackControls(
+            status = state.playbackState.status,
+            canPlay = state.segments.isNotEmpty(),
+            actions = actions,
         )
     }
-
-    PlaybackControls(
-        status = state.playbackState.status,
-        canPlay = state.segments.isNotEmpty(),
-        actions = actions,
-    )
 }
 
 @Composable
@@ -164,10 +178,10 @@ private fun ReaderProgress(state: ReaderUiState) {
 }
 
 @Composable
-private fun EmptyReader() {
+private fun EmptyReader(modifier: Modifier = Modifier) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -217,6 +231,15 @@ private fun PlaybackControls(
                     modifier = Modifier.semantics { contentDescription = "Resume playback" },
                 ) {
                     Text("Resume")
+                }
+
+            PlaybackStatus.LOADING ->
+                Button(
+                    onClick = {},
+                    enabled = false,
+                    modifier = Modifier.semantics { contentDescription = "Loading playback" },
+                ) {
+                    Text("Loading...")
                 }
 
             else ->
@@ -280,6 +303,7 @@ private fun ReaderUiState.progressLabel(): String {
     return when (playbackState.status) {
         PlaybackStatus.PLAYING -> "Playing segment ${segment + 1} of ${segments.size}"
         PlaybackStatus.PAUSED -> "Paused at segment ${segment + 1} of ${segments.size}"
+        PlaybackStatus.LOADING -> "Loading segment ${segment + 1} of ${segments.size}"
         PlaybackStatus.COMPLETED -> "Completed"
         PlaybackStatus.ERROR -> playbackState.message ?: "Playback error"
         else -> "Ready at segment ${segment + 1} of ${segments.size}"

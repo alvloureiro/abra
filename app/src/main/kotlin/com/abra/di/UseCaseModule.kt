@@ -17,6 +17,7 @@ import com.abra.domain.usecase.ObservePlaybackStateUseCase
 import com.abra.domain.usecase.ObserveVoiceSettingsUseCase
 import com.abra.domain.usecase.PauseListeningUseCase
 import com.abra.domain.usecase.PersistPlaybackProgressUseCase
+import com.abra.domain.usecase.NowPlayingUseCases
 import com.abra.domain.usecase.ReaderPlaybackUseCases
 import com.abra.domain.usecase.ReaderProgressUseCases
 import com.abra.domain.usecase.ReaderQueryUseCases
@@ -151,4 +152,17 @@ object ReaderUseCaseModule {
         observeProgress: ObserveListeningProgressUseCase,
         persistPlaybackProgress: PersistPlaybackProgressUseCase,
     ) = ReaderProgressUseCases(observeProgress, persistPlaybackProgress)
+
+    @Provides
+    fun provideNowPlayingUseCases(
+        observePlaybackState: ObservePlaybackStateUseCase,
+        getEbook: GetEbookUseCase,
+        pauseListening: PauseListeningUseCase,
+        resumeListening: ResumeListeningUseCase,
+    ) = NowPlayingUseCases(
+        observePlaybackState,
+        getEbook,
+        pauseListening,
+        resumeListening,
+    )
 }
