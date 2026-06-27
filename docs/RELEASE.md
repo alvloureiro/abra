@@ -71,3 +71,4 @@ Before each Play Console upload, bump in `app/build.gradle.kts`:
 1. Run `./gradlew qualityGate`
 2. Build `./gradlew bundleRelease`
 3. Verify the AAB with Android Studio APK Analyzer (16 KB page alignment if native libraries are present)
+4. Complete `docs/PLAY_CONSOLE_SUBMISSION.md` before uploading to Closed testing

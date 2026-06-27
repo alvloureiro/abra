@@ -48,3 +48,7 @@ Books & Reference (primary) or Education.
 ## Privacy policy URL
 
 `https://github.com/alvloureiro/abra/blob/main/docs/privacy-policy.md`
+
+## Submission checklist
+
+See `docs/PLAY_CONSOLE_SUBMISSION.md` for the full closed-testing workflow.
