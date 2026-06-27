@@ -1,7 +1,7 @@
 [versions]
-agp = "8.13.2"
+agp = "9.0.1"
 kotlin = "2.4.0"
-ksp = "2.2.21-2.0.5"
+ksp = "2.3.9"
 coreKtx = "1.15.0"
 activityCompose = "1.10.1"
 composeBom = "2025.03.01"
@@ -10,7 +10,7 @@ datastore = "1.0.0"
 dependencyAnalysis = "3.16.0"
 dependencyCheck = "12.2.2"
 detekt = "2.0.0-alpha.5"
-hilt = "2.58"
+hilt = "2.60"
 hiltNavigationCompose = "1.2.0"
 javaxInject = "1"
 kotlinMetadataJvm = "2.4.0"
@@ -56,7 +56,6 @@ dependency-analysis = { id = "com.autonomousapps.build-health", version.ref = "d
 dependency-check = { id = "org.owasp.dependencycheck", version.ref = "dependencyCheck" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
@@ -10,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.abra"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.abra"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -28,7 +27,7 @@ android {
     lint {
         abortOnError = true
         checkDependencies = true
-        disable += setOf("AndroidGradlePluginVersion", "GradleDependency")
+        disable += setOf("GradleDependency", "AndroidGradlePluginVersion")
         warningsAsErrors = true
         htmlReport = true
         xmlReport = true
@@ -44,6 +43,10 @@ kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
+
+hilt {
+    enableAggregatingTask = true
 }
 
 dependencies {

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
@@ -10,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.abra.presentation"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -24,7 +23,7 @@ android {
     lint {
         abortOnError = true
         checkDependencies = true
-        disable += setOf("AndroidGradlePluginVersion", "GradleDependency")
+        disable += setOf("GradleDependency", "AndroidGradlePluginVersion")
         warningsAsErrors = true
         htmlReport = true
         xmlReport = true
@@ -40,6 +39,10 @@ kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
+
+hilt {
+    enableAggregatingTask = true
 }
 
 dependencies {

@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.abra.data"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -23,7 +23,7 @@ android {
     lint {
         abortOnError = true
         checkDependencies = true
-        disable += setOf("AndroidGradlePluginVersion", "GradleDependency")
+        disable += setOf("GradleDependency", "AndroidGradlePluginVersion")
         warningsAsErrors = true
         htmlReport = true
         xmlReport = true
