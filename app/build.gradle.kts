@@ -88,6 +88,7 @@ dependencies {
     implementation(project(":presentation"))
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.core.splashscreen)
     implementation(libs.media)
     implementation(platform(libs.compose.bom))
     implementation(libs.activity.compose)

@@ -6,4 +6,10 @@
         <item name="android:navigationBarColor">#FBFCF8</item>
         <item name="android:colorAccent">#0E5E5A</item>
     </style>
+
+    <style name="Theme.Abra.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Abra</item>
+    </style>
 </resources>
