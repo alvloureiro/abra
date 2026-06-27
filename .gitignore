@@ -1,5 +1,7 @@
 *.apk
 *.ap_
+*.jks
+*.keystore
 *.dex
 *.iml
 .DS_Store
