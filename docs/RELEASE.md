@@ -40,12 +40,20 @@ If signing properties are missing, `bundleRelease` still runs but produces an un
 
 ## CI signing
 
-GitHub Actions release workflow uses the same property names via environment variables. See `.github/workflows/release.yml` and repository secrets:
+GitHub Actions release workflow (`.github/workflows/release.yml`) builds a signed AAB on tag push (`v*`) or manual dispatch. Configure these repository secrets:
 
-- `KEYSTORE_BASE64` — base64-encoded keystore file
+- `KEYSTORE_BASE64` — base64-encoded upload keystore file
 - `KEYSTORE_PASSWORD` — store password
 - `KEY_ALIAS` — key alias
 - `KEY_PASSWORD` — key password
+
+Encode a keystore for `KEYSTORE_BASE64`:
+
+```bash
+base64 -i abra-upload.keystore | pbcopy
+```
+
+The workflow maps these secrets to the same `RELEASE_*` properties used for local signing.
 
 ## Play App Signing
 
