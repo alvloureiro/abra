@@ -94,27 +94,43 @@ fun MiniPlayerBar(
                     )
                 }
 
-                when (playback.status) {
-                    PlaybackStatus.PLAYING, PlaybackStatus.LOADING ->
-                        OutlinedButton(
-                            onClick = onPause,
-                            enabled = playback.status == PlaybackStatus.PLAYING,
-                            modifier = Modifier.semantics { contentDescription = "Pause playback" },
-                        ) {
-                            Text("Pause")
-                        }
-
-                    PlaybackStatus.PAUSED ->
-                        OutlinedButton(
-                            onClick = onResume,
-                            modifier = Modifier.semantics { contentDescription = "Resume playback" },
-                        ) {
-                            Text("Play")
-                        }
-
-                    else -> Unit
-                }
+                MiniPlayerPlaybackButton(
+                    status = playback.status,
+                    onPause = onPause,
+                    onResume = onResume,
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun MiniPlayerPlaybackButton(
+    status: PlaybackStatus,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
+) {
+    when (status) {
+        PlaybackStatus.PLAYING, PlaybackStatus.LOADING ->
+            OutlinedButton(
+                onClick = onPause,
+                enabled = status == PlaybackStatus.PLAYING,
+                modifier = Modifier.semantics { contentDescription = "Pause playback" },
+            ) {
+                Text("Pause")
+            }
+
+        PlaybackStatus.PAUSED ->
+            OutlinedButton(
+                onClick = onResume,
+                modifier =
+                    Modifier.semantics {
+                        contentDescription = "Resume playback"
+                    },
+            ) {
+                Text("Play")
+            }
+
+        else -> Unit
     }
 }
