@@ -87,10 +87,13 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
 
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.media)
     implementation(platform(libs.compose.bom))
     implementation(libs.activity.compose)
     implementation(libs.datastore.preferences)
     implementation(libs.hilt.android)
+    implementation(libs.errorprone.annotations)
     implementation(libs.room.runtime)
 
     ksp(libs.hilt.compiler)

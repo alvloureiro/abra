@@ -10,6 +10,7 @@ datastore = "1.0.0"
 dependencyAnalysis = "3.16.0"
 dependencyCheck = "12.2.2"
 detekt = "2.0.0-alpha.5"
+errorproneAnnotations = "2.36.0"
 hilt = "2.60"
 hiltNavigationCompose = "1.2.0"
 javaxInject = "1"
@@ -17,6 +18,7 @@ kotlinMetadataJvm = "2.4.0"
 junit = "4.13.2"
 ktlintGradle = "14.2.0"
 lifecycle = "2.8.7"
+media = "1.7.0"
 pdfboxAndroid = "2.0.27.0"
 room = "2.8.4"
 
@@ -34,6 +36,7 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
+errorprone-annotations = { module = "com.google.errorprone:error_prone_annotations", version.ref = "errorproneAnnotations" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
@@ -44,6 +47,7 @@ lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-com
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+media = { module = "androidx.media:media", version.ref = "media" }
 pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "pdfboxAndroid" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

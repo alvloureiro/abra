@@ -24,7 +24,12 @@ Internal reference for completing the Play Console Data safety form. Update if a
 
 ## Permissions
 
-The app declares **no Android permissions** in its manifest. File access uses Storage Access Framework URI grants chosen by the user.
+The app declares Android permissions required for background listening:
+
+- `FOREGROUND_SERVICE` / `FOREGROUND_SERVICE_MEDIA_PLAYBACK` — keep TTS playback active with a media-style notification while you listen
+- `POST_NOTIFICATIONS` — show playback controls in the notification shade (Android 13+; requested at runtime)
+
+File import still uses Storage Access Framework with no broad storage permissions.
 
 ## Third-party SDKs
 
